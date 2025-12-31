@@ -14,8 +14,12 @@
   <ItemGroup>
     <Folder Include="AwsServices\" />
     <Folder Include="DependencyInjection\" />
-    <Folder Include="Repositories\" />
     <Folder Include="Persistence\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.11" />
   </ItemGroup>
 
 </Project>

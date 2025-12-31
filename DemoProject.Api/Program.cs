@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using DemoProject.Application.Services;
+using DemoProject.Domain.Interfaces;
+using DemoProject.Infrastructure.Data;
+using DemoProject.Infrastructure.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -12,16 +17,26 @@ namespace DemoProject.Api
 {
     public class Program
     {
+        private readonly IConfiguration _configuration;
+        public Program(IConfiguration configuration) 
+        {
+            _configuration = configuration;
+        }
         public static void Main(string[] args) { } // Lambda doesn't use this directly
 
         public void ConfigureServices(IServiceCollection services)
         {
             // Register dependencies here
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<CategoryService>();
             services.AddControllers();
 
             //Cognito auth
-            var region = "us-east-1"; // adjust to your AWS region
-            var userPoolId = "us-east-1_5XB1tgNa4"; // your Cognito User Pool ID
+            var region = _configuration["AWS:Region"]; // adjust to your AWS region
+            var userPoolId = _configuration["AWS:Cognito:userPoolId"]; // your Cognito User Pool ID
+            var AppClientID = _configuration["AWS:Cognito:AppClientID"]; // Cognito App Client ID
             var authority = $"https://cognito-idp.{region}.amazonaws.com/{userPoolId}";
 
             services.AddAuthentication(options =>
@@ -37,7 +52,7 @@ namespace DemoProject.Api
                     ValidateIssuer = true,
                     ValidIssuer = authority,
                     ValidateAudience = true,
-                    ValidAudience = "bsqou3rade8qfjbfr7vgsm837", // Cognito App Client ID
+                    ValidAudience = AppClientID, 
                     ValidateLifetime = true
                 };
             });

@@ -6,7 +6,7 @@ namespace DemoProject.Api.Controllers;
 [Authorize]
 [ApiController]
 [Route("api/[controller]")]
-public class ValuesController : ControllerBase
+public class ProductsController : ControllerBase
 {
     // GET api/values
     [HttpGet]
