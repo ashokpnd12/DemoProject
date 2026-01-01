@@ -1,3 +1,5 @@
+using DemoProject.Application.Services;
+using DemoProject.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,11 +10,17 @@ namespace DemoProject.Api.Controllers;
 [Route("api/[controller]")]
 public class ProductsController : ControllerBase
 {
+    private readonly ProductService _productService;
+    public ProductsController(ProductService productService)
+    {
+        _productService = productService;
+    }
     // GET api/values
     [HttpGet]
-    public IEnumerable<string> Get()
+    public async Task<IActionResult> GetProducts()
     {
-        return new string[] { "value1", "value2" };
+        var products = await _productService.GetProductsAsync();
+        return Ok(products);
     }
 
     // GET api/values/5

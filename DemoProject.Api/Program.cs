@@ -30,7 +30,9 @@ namespace DemoProject.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<CategoryService>();
+            services.AddScoped<ProductService>();
             services.AddControllers();
 
             //Cognito auth
