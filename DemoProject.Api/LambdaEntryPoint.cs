@@ -29,8 +29,16 @@ public class LambdaEntryPoint :
 
     protected override void Init(IWebHostBuilder builder)
     {
-        builder
-            .UseStartup<Program>();
+        //builder
+        //.UseStartup<Program>();
+        builder.ConfigureAppConfiguration((context, config) =>
+        {
+            //Add extra config source if needed (Parameter store, Secrets manager, etc.)
+        })
+            .ConfigureLogging(logging =>
+            {
+                logging.AddLambdaLogger(); // Push logs to cloudwatch
+            });
     }
 
     /// <summary>

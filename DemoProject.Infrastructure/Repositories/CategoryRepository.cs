@@ -22,5 +22,41 @@ namespace DemoProject.Infrastructure.Repositories
         {
             return await _dbContext.Categories.ToListAsync();
         }
+
+        public async Task<Category?> GetCategoryByIdAsync(int id)
+        {
+            return await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        }
+
+        public async Task<Category> AddCategoryAsync(Category category)
+        {
+            await _dbContext.Categories.AddAsync(category);
+            return category;
+        }
+
+        public async Task<Category> UpdateCategoryAsync(Category category)
+        {
+            var existingCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
+            if (existingCategory == null)
+            {
+                return null;
+            }
+
+            existingCategory.Name = category.Name;
+            existingCategory.DisplayOrder = category.DisplayOrder;
+            _dbContext.Categories.Update(existingCategory);
+            return existingCategory;
+        }
+
+        public async Task<Category> DeleteCategoryAsync(int id)
+        {
+            var category = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            if (category == null)
+            {
+                return null;
+            }
+            _dbContext.Categories.Remove(category);
+            return category;
+        }
     }
 }

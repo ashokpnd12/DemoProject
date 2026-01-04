@@ -10,5 +10,9 @@ namespace DemoProject.Domain.Interfaces
     public interface IProductRepository
     {
         Task<List<Product>> GetAllProductAsync();
+        Task<Product> GetProductByIdAsync(int id);
+        Task<Product> AddProductAsync(Product product);
+        Task<Product> UpdateProductAsync(Product product);
+        Task<Product> DeleteProductAsync(int id);
     }
 }

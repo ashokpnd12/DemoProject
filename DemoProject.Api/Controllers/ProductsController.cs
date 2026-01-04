@@ -2,6 +2,7 @@ using DemoProject.Application.Services;
 using DemoProject.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DemoProject.Api.Controllers;
 
@@ -25,26 +26,51 @@ public class ProductsController : ControllerBase
 
     // GET api/values/5
     [HttpGet("{id}")]
-    public string Get(int id)
+    public async Task<IActionResult> GetProductByIdAsync(int id)
     {
-        return "value";
+        var products=await _productService.GetProductsByIdAsync(id);
+        return Ok(products);
     }
 
     // POST api/values
     [HttpPost]
-    public void Post([FromBody]string value)
+    public async Task<IActionResult> AddProduct([FromBody] Product product)
     {
+        if (product == null)
+        {
+            return BadRequest("Product is null");
+        }
+        var updatedProduct=await _productService.AddProductAsync(product);
+        if (updatedProduct == null)
+        {
+            return NotFound("Product is null"); ;
+        }
+        return Ok(updatedProduct);
     }
 
     // PUT api/values/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody]string value)
+    [HttpPut]
+    public async Task<IActionResult> UpdateProductAsync([FromBody] Product product)
     {
+        if (product == null)
+        {
+            return BadRequest("Product is null");
+        }
+        var existingProduct = await _productService.UpdateProductSync(product);
+        if(existingProduct == null)
+        {
+            return NotFound("Product not found");
+        }
+        return Ok(existingProduct);
     }
 
     // DELETE api/values/5
     [HttpDelete("{id}")]
-    public void Delete(int id)
+    public async Task<IActionResult> Delete(int id)
     {
+        bool success = await _productService.DeleteProductAsync(id);
+        if (!success)
+            return NotFound("Product not found");
+        return NoContent();
     }
 }

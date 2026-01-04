@@ -31,6 +31,7 @@ namespace DemoProject.Api
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CategoryService>();
             services.AddScoped<ProductService>();
             services.AddControllers();
